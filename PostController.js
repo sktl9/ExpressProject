@@ -4,6 +4,7 @@ import PostService from "./PostService.js";
 class PostController {
     async create(req, res) {
         try {
+            console.log(req.files);
             const post = await PostService.create(req.body)
             res.json(post);
         } catch (e) {
@@ -13,7 +14,7 @@ class PostController {
 
     async getAll(req, res) {
         try {
-            const posts = await Post.find();
+            const posts = await PostService.getAll()
             res.json(posts);
         } catch (e) {
             res.status(500).json(e)
@@ -28,9 +29,7 @@ class PostController {
     }
     async update(req, res) {
         try {
-            const post = req.body
-            if (!post._id) { return res.status(400).json({ messege: 'id не передан' }) }
-            const updatedPost = await Post.findByIdAndUpdate(post._id, post, { new: true })
+            const updatedPost = await PostService.update(req.body)
             return res.json(updatedPost)
         } catch (e) {
             res.status(500).json(e)
@@ -38,9 +37,7 @@ class PostController {
     }
     async delete(req, res) {
         try {
-            const { id } = req.params
-            if (!id) { return res.status(400).json({ messege: 'id не передан' }) }
-            const post = await Post.findByIdAndDelete(id)
+            const post = await PostService.delete(req.params.id)
             return res.json(post)
         } catch (e) {
 
